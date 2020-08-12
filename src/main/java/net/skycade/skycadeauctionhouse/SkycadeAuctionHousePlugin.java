@@ -27,7 +27,7 @@ public class SkycadeAuctionHousePlugin extends SkycadePlugin {
 
     @Override
     public void onEnable() {
-        defaults();
+        loadDefaults();
         instance = this;
 
         v18 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
@@ -54,7 +54,7 @@ public class SkycadeAuctionHousePlugin extends SkycadePlugin {
         return auctionsManager;
     }
 
-    private void defaults() {
+    private void loadDefaults() {
         Map<String, Object> defaults = new TreeMap<>();
 
         defaults.put("maxSellPrice", 100000000);

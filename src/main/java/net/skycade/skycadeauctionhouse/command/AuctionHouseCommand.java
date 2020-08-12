@@ -18,6 +18,8 @@ import java.util.Collections;
 import static net.skycade.SkycadeCore.Localization.Global.PLAYERS_ONLY;
 import static net.skycade.skycadeauctionhouse.util.Messages.*;
 
+@NoConsole
+@Permissible("auctionhouse.use")
 public class AuctionHouseCommand extends SkycadeCommand {
 
     private SkycadeAuctionHousePlugin plugin;
@@ -31,18 +33,9 @@ public class AuctionHouseCommand extends SkycadeCommand {
         );
     }
 
-    @NoConsole
     @Override
-    @Permissible("auctionhouse.use")
     public void onCommand(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) {
-            PLAYERS_ONLY.msg(sender);
-            return;
-        }
-
-        if (sender.hasPermission("auctionhouse.use")) {
-            new ListedAuctionsGUI((Player) sender, 1).open((Player) sender);
-        }
+        new ListedAuctionsGUI((Player) sender, 1).open((Player) sender);
     }
 
     @SubCommand
