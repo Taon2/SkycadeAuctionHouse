@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static net.skycade.skycadeauctionhouse.util.Messages.ITEM_REMOVED;
+
 public class ListedAuctionsGUI extends DynamicGui {
 
     private static final ItemStack BACK = new ItemBuilder(Material.ARROW)
@@ -26,6 +28,27 @@ public class ListedAuctionsGUI extends DynamicGui {
             .build();
     private static final ItemStack NEXT = new ItemBuilder(Material.ARROW)
             .setDisplayName(ChatColor.GOLD + "Next")
+            .build();
+    private static final ItemStack YOUR_AUCTIONS = new ItemBuilder(Material.DIAMOND)
+            .setDisplayName(ChatColor.GOLD + "Current Listeings")
+            .addToLore(ChatColor.GREEN + "Click here to manage all of the items you")
+            .addToLore(ChatColor.GREEN + "are currently selling on the auction house.")
+            .build();
+    private static final ItemStack YOUR_EXPIRED = new ItemBuilder(Material.BUCKET)
+            .setDisplayName(ChatColor.GOLD + "Cancelled / Expired Listings")
+            .addToLore(ChatColor.GREEN + "Click here to view and retrieve any")
+            .addToLore(ChatColor.GREEN + "items you have cancelled or that have expired.")
+            .build();
+    private static final ItemStack HOW_TO_SELL = new ItemBuilder(Material.EMERALD)
+            .setDisplayName(ChatColor.GOLD + "How To Sell An Item")
+            .addToLore(ChatColor.GREEN + "To list an item on the auction house, just hold")
+            .addToLore(ChatColor.GREEN + "the item in your hand and type " + ChatColor.AQUA + "/ah sell <price>" + ChatColor.GREEN + ".")
+            .build();
+    private static final ItemStack WHAT_IS_THIS_PAGE = new ItemBuilder(Material.BOOK)
+            .setDisplayName(ChatColor.GOLD + "What Is This Page?")
+            .addToLore(ChatColor.GREEN + "This is the auction house. Here you can")
+            .addToLore(ChatColor.GREEN + "list items for sale, and purchase items")
+            .addToLore(ChatColor.GREEN + "that others have listed for sale.")
             .build();
 
     public ListedAuctionsGUI(Player player, int page) {
@@ -53,13 +76,11 @@ public class ListedAuctionsGUI extends DynamicGui {
                             }
 
                             lore.add(ChatColor.GRAY + "------------------------------");
-
                             if (SkycadeAuctionHousePlugin.getInstance().getEconomy().getBalance(player) < auction.getCost()) {
                                 lore.add(ChatColor.GOLD + "You can not afford this item.");
                             } else {
                                 lore.add(ChatColor.GREEN + "Click here to purchase.");
                             }
-
                             lore.add("");
                             lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + auction.getCost());
                             lore.add(ChatColor.BLUE + "Seller: " + ChatColor.GOLD + MojangUtil.get(auction.getAuctionedBy()).getName());
@@ -77,21 +98,51 @@ public class ListedAuctionsGUI extends DynamicGui {
                             return item;
                         },
                         (p, ev) -> {
+                            if (ev.isShiftClick() && ev.isRightClick() && p.hasPermission("auctionhouse.cancel.others")) {
+                                auction.setIsActive(false);
+                                auction.setAreItemsClaimed(true);
+                                SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().removeAuction(auction);
+                                SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auction.getAuctionId(), p.getUniqueId());
+                                ITEM_REMOVED.msg(p);
+                                new ListedAuctionsGUI(player, page).open(p);
+                                return;
+                            }
+
                             new ConfirmGUI(auction, p).open(p);
                         }));
 
         if (page > 1) {
-            setItemInteraction(45, new ItemBuilder(BACK).build(),
+            setItemInteraction(48, new ItemBuilder(BACK).build(),
                     (p, ev) -> {
-                        new ListedAuctionsGUI(player, page -1).open(p);
+                        new ListedAuctionsGUI(player, page - 1).open(p);
                     });
         }
 
         if (activeAuctions.size() > page * 45) {
-            setItemInteraction(53, new ItemBuilder(NEXT).build(),
+            setItemInteraction(50, new ItemBuilder(NEXT).build(),
                     (p, ev) -> {
                         new ListedAuctionsGUI(player, page + 1).open(p);
                     });
         }
+
+        setItemInteraction(45, new ItemBuilder(YOUR_AUCTIONS)
+                        .addToLore(auctionsManager.getActiveAuctions(player.getUniqueId()).size() > 0 ?
+                                ChatColor.BLUE + "Listings: " + ChatColor.GOLD + auctionsManager.getActiveAuctions(player.getUniqueId()).size() :
+                                ChatColor.RED + "You have no items listed.").build(),
+                (p, ev) -> {
+                    new YourListingsGUI(p).open(p);
+                });
+
+        setItemInteraction(46, new ItemBuilder(YOUR_EXPIRED)
+                        .addToLore(auctionsManager.getExpiredUnclaimedAuctions(player.getUniqueId()).size() > 0 ?
+                                ChatColor.BLUE + "Retrievable: " + ChatColor.GOLD + auctionsManager.getExpiredUnclaimedAuctions(player.getUniqueId()).size() :
+                                ChatColor.RED + "You have no items to retrieve.").build(),
+                (p, ev) -> {
+                    new ExpiredListingsGUI(p, 1).open(p);
+                });
+
+        setItem(52, new ItemBuilder(HOW_TO_SELL).build());
+
+        setItem(53, new ItemBuilder(WHAT_IS_THIS_PAGE).build());
     }
 }

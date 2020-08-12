@@ -16,6 +16,10 @@ public class Messages {
     public static Localization.Message SOMEONE_PURCHASED = new Localization.Message("purchase.someone-purchased", "&a%player% &6purchased your auction of &a%amount% &a%item% &6for &a$%price%&6.");
     public static Localization.Message ITEM_DOES_NOT_EXIST = new Localization.Message("purchase.does-not-exist", "&cThat item is no longer being sold.");
 
+    public static Localization.Message ITEM_REMOVED = new Localization.Message("auction.item-removed", "&6That item has been successfully removed.");
+    public static Localization.Message CHECK_EXPIRED = new Localization.Message("auction.check-expired", "&eRetrieve cancelled and expired items from &a/ah expired&6.");
+    public static Localization.Message ITEM_RETURNED = new Localization.Message("auction.item-returned", "&6That item has been returned.");
+
     public static void init() {
         Localization.getInstance().registerMessages("skycade.auction-house",
                 NEED_PRICE,
@@ -27,7 +31,10 @@ public class Messages {
                 NO_INVENTORY_SPACE,
                 ITEM_DOES_NOT_EXIST,
                 ITEM_LISTED,
-                CANNOT_PURCHASE_OWN
+                CANNOT_PURCHASE_OWN,
+                ITEM_REMOVED,
+                CHECK_EXPIRED,
+                ITEM_RETURNED
         );
     }
 }

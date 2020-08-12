@@ -50,6 +50,10 @@ public class AuctionsManager {
         persistAuction(auction.getAuctionId());
     }
 
+    public void expireAuction(Auction auction) {
+        persistAuction(auction.getAuctionId());
+    }
+
     public void removeAuction(Auction auction) {
         persistAuction(auction.getAuctionId());
         currentAuctions.remove(auction.getAuctionId());

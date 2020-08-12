@@ -67,7 +67,7 @@ class ConfirmGUI extends DynamicGui {
                     if (unlisted) {
                         YOU_PURCHASED.msg(p,
                                 "%amount%", Integer.toString(auction.getItemStack().getAmount()),
-                                "%item%", "%item%", auction.getItemStack().hasItemMeta() ?
+                                "%item%", auction.getItemStack().hasItemMeta() ?
                                         auction.getItemStack().getItemMeta().getDisplayName() :
                                         auction.getItemStack().getType().name(),
                                 "%price%", Double.toString(auction.getCost()),
