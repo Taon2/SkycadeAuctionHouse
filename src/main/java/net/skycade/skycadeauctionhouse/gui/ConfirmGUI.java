@@ -62,7 +62,7 @@ class ConfirmGUI extends DynamicGui {
                         return;
                     }
 
-                    boolean unlisted = SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auction.getAuctionId(), p.getUniqueId());
+                    boolean unlisted = SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auction.getAuctionId());
 
                     if (unlisted) {
                         YOU_PURCHASED.msg(p,
@@ -103,10 +103,7 @@ class ConfirmGUI extends DynamicGui {
                         return;
                     }
 
-                    auction.setIsActive(false);
-                    auction.setAreItemsClaimed(true);
-
-                    SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().removeAuction(auction);
+                    auction.remove();
 
                     new ListedAuctionsGUI(player, 1).open(p);
                 });

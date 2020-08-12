@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 
-import static net.skycade.SkycadeCore.Localization.Global.PLAYERS_ONLY;
 import static net.skycade.skycadeauctionhouse.util.Messages.*;
 
 @NoConsole
@@ -48,6 +47,7 @@ public class AuctionHouseCommand extends SkycadeCommand {
         }
 
         @Override
+        @SuppressWarnings("deprecated") // ricky you told me to put this here dont you dare get mad
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length < 1) {
                 NEED_PRICE.msg(sender);

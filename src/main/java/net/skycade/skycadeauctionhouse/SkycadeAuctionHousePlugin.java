@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.skycade.SkycadeCore.SkycadePlugin;
 import net.skycade.skycadeauctionhouse.command.AuctionHouseCommand;
 import net.skycade.skycadeauctionhouse.data.AuctionsManager;
+import net.skycade.skycadeauctionhouse.data.ExpireRunnable;
 import net.skycade.skycadeauctionhouse.util.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,6 +36,8 @@ public class SkycadeAuctionHousePlugin extends SkycadePlugin {
         auctionsManager = new AuctionsManager();
 
         new AuctionHouseCommand(this);
+
+        new ExpireRunnable(auctionsManager).runTaskTimerAsynchronously(this, 5 * 20, 5 * 20);
 
         Messages.init();
     }

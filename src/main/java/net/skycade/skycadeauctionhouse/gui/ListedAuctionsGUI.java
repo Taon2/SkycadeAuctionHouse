@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static net.skycade.skycadeauctionhouse.util.Messages.ITEM_REMOVED;
+import static net.skycade.skycadeauctionhouse.util.Messages.*;
 
 public class ListedAuctionsGUI extends DynamicGui {
 
@@ -99,11 +99,19 @@ public class ListedAuctionsGUI extends DynamicGui {
                         },
                         (p, ev) -> {
                             if (ev.isShiftClick() && ev.isRightClick() && p.hasPermission("auctionhouse.cancel.others")) {
-                                auction.setIsActive(false);
-                                auction.setAreItemsClaimed(true);
-                                SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().removeAuction(auction);
-                                SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auction.getAuctionId(), p.getUniqueId());
+                                auction.remove();
                                 ITEM_REMOVED.msg(p);
+                                if (Bukkit.getOfflinePlayer(auction.getAuctionedBy()).isOnline()) {
+                                    SOMEONE_REMOVED.msg(Bukkit.getPlayer(auction.getAuctionedBy()),
+                                            "%player%", p.getName(),
+                                            "%amount%", Integer.toString(auction.getItemStack().getAmount()),
+                                            "%item%", auction.getItemStack().hasItemMeta() ?
+                                                    auction.getItemStack().getItemMeta().getDisplayName() :
+                                                    auction.getItemStack().getType().name(),
+                                            "%price%", Double.toString(auction.getCost()));
+                                } else {
+                                    //todo send event/packet for skyblock to message player
+                                }
                                 new ListedAuctionsGUI(player, page).open(p);
                                 return;
                             }

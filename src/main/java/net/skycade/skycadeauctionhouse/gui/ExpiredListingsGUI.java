@@ -84,7 +84,7 @@ public class ExpiredListingsGUI extends DynamicGui {
                     }
 
                     auction.setAreItemsClaimed(true);
-                    SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().removeAuction(auction);
+                    auction.remove();
                     ITEM_RETURNED.msg(p);
                     new ExpiredListingsGUI(p, 1).open(p);
                 }));

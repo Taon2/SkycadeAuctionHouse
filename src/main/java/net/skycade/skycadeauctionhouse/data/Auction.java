@@ -1,5 +1,6 @@
 package net.skycade.skycadeauctionhouse.data;
 
+import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -11,7 +12,6 @@ public class Auction {
     private long auctionedOn;
     private ItemStack itemStack;
     private double cost;
-    private boolean isActive;
     private boolean itemsClaimed;
 
     public Auction(UUID auctionedBy, ItemStack itemStack, double cost) {
@@ -20,17 +20,15 @@ public class Auction {
         this.auctionedOn = System.currentTimeMillis();
         this.itemStack = itemStack;
         this.cost = cost;
-        this.isActive = true;
         this.itemsClaimed = false;
     }
 
-    public Auction(int auctionId, UUID auctionedBy, long auctionedOn, ItemStack itemStack, double cost, boolean isActive, boolean itemsClaimed) {
+    public Auction(int auctionId, UUID auctionedBy, long auctionedOn, ItemStack itemStack, double cost, boolean itemsClaimed) {
         this.auctionId = auctionId;
         this.auctionedBy = auctionedBy;
         this.auctionedOn = auctionedOn;
         this.itemStack = itemStack;
         this.cost = cost;
-        this.isActive = isActive;
         this.itemsClaimed = itemsClaimed;
     }
 
@@ -54,6 +52,10 @@ public class Auction {
         return cost;
     }
 
+    public boolean isActive() {
+        return auctionedOn + Config.getListingDuration() > System.currentTimeMillis();
+    }
+
     public boolean areItemsClaimed() {
         return itemsClaimed;
     }
@@ -62,11 +64,15 @@ public class Auction {
         this.itemsClaimed = itemsClaimed;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public void unlist() {
+        this.itemsClaimed = false;
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(this.getAuctionId());
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(this.getAuctionId());
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void remove() {
+        this.itemsClaimed = true;
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(this.getAuctionId());
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(this.getAuctionId());
     }
 }

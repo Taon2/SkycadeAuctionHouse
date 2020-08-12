@@ -50,37 +50,25 @@ public class AuctionsManager {
         persistAuction(auction.getAuctionId());
     }
 
-    public void expireAuction(Auction auction) {
-        persistAuction(auction.getAuctionId());
-    }
-
-    public void removeAuction(Auction auction) {
-        persistAuction(auction.getAuctionId());
-        currentAuctions.remove(auction.getAuctionId());
-    }
-
-    public void loadAuctions() {
+    private void loadAuctions() {
         Bukkit.getScheduler().runTaskAsynchronously(SkycadeAuctionHousePlugin.getInstance(), () -> {
             try (Connection connection = CoreSettings.getInstance().getConnection()) {
-                String sql = "SELECT * FROM skycade_auctions WHERE instance = ? AND season = ?";
+                String sql = "SELECT * FROM skycade_auctions WHERE " +
+                        "areItemsReclaimed IS FALSE AND instance = ? AND season = ?";
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setString(1, CoreSettings.getInstance().getThisInstance());
                     statement.setString(2, CoreSettings.getInstance().getSeason());
 
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
-                        if (resultSet.getBoolean("isActive")
-                                || (resultSet.getBoolean("isActive") && resultSet.getBoolean("areItemsReclaimed") )) {
-                            int auctionId = resultSet.getInt("auctionId");
-                            UUID auctionedBy = UUID.fromString(resultSet.getString("auctionedBy"));
-                            long auctionedOn = resultSet.getLong("auctionedOn");
-                            ItemStack itemStack = CoreUtil.itemStackArrayFromBase64(resultSet.getString("itemStack"))[0];
-                            double cost = resultSet.getDouble("cost");
-                            boolean isActive = resultSet.getBoolean("isActive");
-                            boolean itemsReclaimed = resultSet.getBoolean("areItemsReclaimed");
+                        int auctionId = resultSet.getInt("auctionId");
+                        UUID auctionedBy = UUID.fromString(resultSet.getString("auctionedBy"));
+                        long auctionedOn = resultSet.getLong("auctionedOn");
+                        ItemStack itemStack = CoreUtil.itemStackArrayFromBase64(resultSet.getString("itemStack"))[0];
+                        double cost = resultSet.getDouble("cost");
+                        boolean itemsReclaimed = resultSet.getBoolean("areItemsReclaimed");
 
-                            currentAuctions.put(auctionId, new Auction(auctionId, auctionedBy, auctionedOn, itemStack, cost, isActive, itemsReclaimed));
-                        }
+                        currentAuctions.put(auctionId, new Auction(auctionId, auctionedBy, auctionedOn, itemStack, cost, itemsReclaimed));
                     }
                 }
             } catch (SQLException e) {
@@ -95,35 +83,37 @@ public class AuctionsManager {
         Bukkit.getScheduler().runTaskAsynchronously(SkycadeAuctionHousePlugin.getInstance(), () -> {
             try (Connection connection = CoreSettings.getInstance().getConnection()) {
                 String sql = "INSERT INTO skycade_auctions (`auctionId`, `auctionedBy`, `auctionedOn`, `itemStack`, " +
-                        "`cost`, `isActive`, `areItemsReclaimed`, `instance`, `season`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE isActive = VALUES(isActive), areItemsReclaimed = VALUES(areItemsReclaimed)";
+                        "`cost`, `areItemsReclaimed`, `instance`, `season`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                        "ON DUPLICATE KEY UPDATE areItemsReclaimed = VALUES(areItemsReclaimed)";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, auction.getAuctionId());
                 statement.setString(2, auction.getAuctionedBy().toString());
                 statement.setLong(3, auction.getAuctionedOn());
                 statement.setString(4, CoreUtil.itemStackArrayToBase64(new ItemStack[] {auction.getItemStack()}));
                 statement.setDouble(5, auction.getCost());
-                statement.setBoolean(6, auction.isActive());
-                statement.setBoolean(7, auction.areItemsClaimed());
-                statement.setString(8, CoreSettings.getInstance().getThisInstance());
-                statement.setString(9, CoreSettings.getInstance().getSeason());
+                statement.setBoolean(6, auction.areItemsClaimed());
+                statement.setString(7, CoreSettings.getInstance().getThisInstance());
+                statement.setString(8, CoreSettings.getInstance().getSeason());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
+
+        if (!auction.isActive() && auction.areItemsClaimed()) {
+            currentAuctions.remove(auctionId);
+        }
     }
 
-    public boolean unlistAuction(int auctionId, UUID unlistedBy) {
+    public boolean unlistAuction(int auctionId) {
         try (Connection connection = CoreSettings.getInstance().getConnection()) {
-            String sql = "INSERT INTO skycade_auctions_purchase_history (`auctionId`, `unlistedBy`, `unlistedOn`, " +
-                    "`instance`, `season`) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO skycade_auctions_purchase_history (`auctionId`, `unlistedOn`, " +
+                    "`instance`, `season`) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, auctionId);
-            statement.setString(2, unlistedBy.toString());
-            statement.setLong(3, System.currentTimeMillis());
-            statement.setString(4, CoreSettings.getInstance().getThisInstance());
-            statement.setString(5, CoreSettings.getInstance().getSeason());
+            statement.setLong(2, System.currentTimeMillis());
+            statement.setString(3, CoreSettings.getInstance().getThisInstance());
+            statement.setString(4, CoreSettings.getInstance().getSeason());
             statement.executeUpdate();
         } catch (SQLException e) {
             return false;

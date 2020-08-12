@@ -78,10 +78,7 @@ public class YourListingsGUI extends DynamicGui {
                 },
                 (p, ev) -> {
                     if (p.hasPermission("auctionhouse.cancel")) {
-                        auction.setIsActive(false);
-                        auction.setAreItemsClaimed(false);
-                        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().expireAuction(auction);
-                        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auction.getAuctionId(), p.getUniqueId());
+                        auction.unlist();
                         ITEM_REMOVED.msg(p);
                         CHECK_EXPIRED.msg(p);
                         new YourListingsGUI(p).open(p);

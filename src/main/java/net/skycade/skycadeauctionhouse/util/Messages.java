@@ -15,8 +15,10 @@ public class Messages {
     public static Message CANNOT_AFFORD = new Message("purchase.cannot-afford", "&cYou can not afford that item.");
     public static Message YOU_PURCHASED = new Message("purchase.you-purchased", "&6You bought &a%amount% &6of &a%item% &6for &a$%price% &6from &a%player%.");
     public static Message SOMEONE_PURCHASED = new Message("purchase.someone-purchased", "&a%player% &6purchased your auction of &a%amount% &a%item% &6for &a$%price%&6.");
+    public static Message SOMEONE_REMOVED = new Message("purchase.someone-removed", "&a%player% &6removed your auction of &a%amount% &a%item%&6.");
     public static Message ITEM_DOES_NOT_EXIST = new Message("purchase.does-not-exist", "&cThat item is no longer being sold.");
 
+    public static Message AUCTION_EXPIRED = new Message("auction.auction-expired", "&6Your auction of &a%amount% &a%item%&6 has expired.");
     public static Message ITEM_REMOVED = new Message("auction.item-removed", "&6That item has been successfully removed.");
     public static Message CHECK_EXPIRED = new Message("auction.check-expired", "&eRetrieve cancelled and expired items from &a/ah expired&6.");
     public static Message ITEM_RETURNED = new Message("auction.item-returned", "&6That item has been returned.");
@@ -35,7 +37,9 @@ public class Messages {
                 CANNOT_PURCHASE_OWN,
                 ITEM_REMOVED,
                 CHECK_EXPIRED,
-                ITEM_RETURNED
+                ITEM_RETURNED,
+                SOMEONE_REMOVED,
+                AUCTION_EXPIRED
         );
     }
 }
