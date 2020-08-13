@@ -32,6 +32,7 @@ class ConfirmGUI extends DynamicGui {
 
         setItemInteraction(11, new ItemBuilder(CONFIRM).build(),
                 (p, ev) -> {
+                    // check if it's their own auction
                     if (auction.getAuctionedBy().equals(player.getUniqueId())) {
                         CANNOT_PURCHASE_OWN.msg(player);
                         if (v18)
@@ -41,6 +42,7 @@ class ConfirmGUI extends DynamicGui {
                         return;
                     }
 
+                    // check balance
                     Economy economy = SkycadeAuctionHousePlugin.getInstance().getEconomy();
                     if (economy.getBalance(player) < auction.getCost()) {
                         CANNOT_AFFORD.msg(p);
@@ -52,6 +54,7 @@ class ConfirmGUI extends DynamicGui {
                         return;
                     }
 
+                    // check inventory space
                     if (player.getInventory().firstEmpty() == -1) {
                         NO_INVENTORY_SPACE.msg(p);
                         if (v18)

@@ -19,9 +19,8 @@ public class Messages {
     public static Message ITEM_DOES_NOT_EXIST = new Message("purchase.does-not-exist", "&cThat item is no longer being sold.");
 
     public static Message AUCTION_EXPIRED = new Message("auction.auction-expired", "&6Your auction of &a%amount% &a%item%&6 has expired.");
-    public static Message ITEM_REMOVED = new Message("auction.item-removed", "&6That item has been successfully removed.");
-    public static Message CHECK_EXPIRED = new Message("auction.check-expired", "&eRetrieve cancelled and expired items from &a/ah expired&6.");
-    public static Message ITEM_RETURNED = new Message("auction.item-returned", "&6That item has been returned.");
+    public static Message ITEM_REMOVED = new Message("auction.item-removed", "&6That item has been successfully removed and returned to your inventory.");
+    public static Message CHECK_EXPIRED = new Message("auction.check-expired", "&eRetrieve cancelled and expired items from the &aYour Listings &emenu.");
 
     public static void init() {
         Localization.getInstance().registerMessages("skycade.auction-house",
@@ -37,7 +36,6 @@ public class Messages {
                 CANNOT_PURCHASE_OWN,
                 ITEM_REMOVED,
                 CHECK_EXPIRED,
-                ITEM_RETURNED,
                 SOMEONE_REMOVED,
                 AUCTION_EXPIRED
         );

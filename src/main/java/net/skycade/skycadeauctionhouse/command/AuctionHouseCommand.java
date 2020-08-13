@@ -70,7 +70,7 @@ public class AuctionHouseCommand extends SkycadeCommand {
 
             ItemStack itemStack = player.getItemInHand();
 
-            if (plugin.getAuctionsManager().getActiveAuctions(player.getUniqueId()).size() >= Config.getMaxAuctions()) {
+            if (plugin.getAuctionsManager().getPlayerAuctions(player.getUniqueId()).size() >= Config.getMaxAuctions()) {
                 MAX_AUCTIONS.msg(sender);
                 return;
             }

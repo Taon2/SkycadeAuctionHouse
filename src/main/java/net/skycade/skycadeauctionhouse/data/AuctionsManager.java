@@ -33,17 +33,8 @@ public class AuctionsManager {
         return currentAuctions.get(auctionId);
     }
 
-    public List<Auction> getActiveAuctions(UUID uuid) {
+    public List<Auction> getPlayerAuctions(UUID uuid) {
         return currentAuctions.values().stream().filter(auction ->
-                auction.isActive() &&
-                auction.getAuctionedBy().equals(uuid)).collect(Collectors.toList());
-    }
-
-    public List<Auction> getExpiredUnclaimedAuctions(UUID uuid) {
-        return currentAuctions.values().stream().filter(auction ->
-                !auction.isActive() &&
-                !auction.areItemsClaimed() &&
-                auction.areItemsReclaimable() &&
                 auction.getAuctionedBy().equals(uuid)).collect(Collectors.toList());
     }
 
@@ -66,12 +57,12 @@ public class AuctionsManager {
                         int auctionId = resultSet.getInt("auctionId");
                         UUID auctionedBy = UUID.fromString(resultSet.getString("auctionedBy"));
                         long auctionedOn = resultSet.getLong("auctionedOn");
-                        long unlistedOn = resultSet.getLong("unlistedOn");
+                        long expiresOn = resultSet.getLong("expiresOn");
                         ItemStack itemStack = CoreUtil.itemStackArrayFromBase64(resultSet.getString("itemStack"))[0];
                         double cost = resultSet.getDouble("cost");
                         boolean itemsClaimed = resultSet.getBoolean("areItemsReclaimed");
 
-                        currentAuctions.put(auctionId, new Auction(auctionId, auctionedBy, auctionedOn, unlistedOn, itemStack, cost, itemsClaimed));
+                        currentAuctions.put(auctionId, new Auction(auctionId, auctionedBy, auctionedOn, expiresOn, itemStack, cost, itemsClaimed));
                     }
                 }
             } catch (SQLException e) {
@@ -85,14 +76,14 @@ public class AuctionsManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(SkycadeAuctionHousePlugin.getInstance(), () -> {
             try (Connection connection = CoreSettings.getInstance().getConnection()) {
-                String sql = "INSERT INTO skycade_auctions (`auctionId`, `auctionedBy`, `auctionedOn`, `unlistedOn`, `itemStack`, " +
+                String sql = "INSERT INTO skycade_auctions (`auctionId`, `auctionedBy`, `auctionedOn`, `expiresOn`, `itemStack`, " +
                         "`cost`, `areItemsReclaimed`, `instance`, `season`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE unlistedOn = VALUES(unlistedOn), areItemsReclaimed = VALUES(areItemsReclaimed)";
+                        "ON DUPLICATE KEY UPDATE areItemsReclaimed = VALUES(areItemsReclaimed)";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, auction.getAuctionId());
                 statement.setString(2, auction.getAuctionedBy().toString());
                 statement.setLong(3, auction.getAuctionedOn());
-                statement.setLong(4, auction.getUnlistedOn());
+                statement.setLong(4, auction.getExpiresOn());
                 statement.setString(5, CoreUtil.itemStackArrayToBase64(new ItemStack[] {auction.getItemStack()}));
                 statement.setDouble(6, auction.getCost());
                 statement.setBoolean(7, auction.areItemsClaimed());
