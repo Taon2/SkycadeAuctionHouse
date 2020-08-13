@@ -22,12 +22,23 @@ public class ExpireRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Auction auction : auctionsManager.getActiveAuctions()) {
+        for (Auction auction : auctionsManager.getAllAuctions()) {
             // only bother if the auction is expired and player hasn't been told
-            if (auction.isActive() &&
+            if (!auction.isActive() &&
                     !listOfAuctionIdsWhoseOwnersIHaveAlreadyNotifiedOfTheRelativeExpiryAndWontMessageAgain.contains(auction.getAuctionId())) {
                 // message player if online, or send event to skyblock in case theyre online
                 if (Bukkit.getOfflinePlayer(auction.getAuctionedBy()).isOnline()) {
+
+                    // if the auction is missing an unlist time, make it have one
+                    if (auction.getUnlistedOn() == -1)
+                        auction.unlist();
+
+                    // if the auction isnt reclaimable and isnt active, and is being checked here, it needs to be properly removed.
+                    if (!auction.areItemsReclaimable()) {
+                        auction.remove();
+                        return;
+                    }
+
                     AUCTION_EXPIRED.msg(Bukkit.getPlayer(auction.getAuctionedBy()),
                             "%amount%", Integer.toString(auction.getItemStack().getAmount()),
                             "%item%", auction.getItemStack().hasItemMeta() ?

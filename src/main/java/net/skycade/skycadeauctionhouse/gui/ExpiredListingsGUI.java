@@ -83,7 +83,6 @@ public class ExpiredListingsGUI extends DynamicGui {
                         return;
                     }
 
-                    auction.setAreItemsClaimed(true);
                     auction.remove();
                     ITEM_RETURNED.msg(p);
                     new ExpiredListingsGUI(p, 1).open(p);

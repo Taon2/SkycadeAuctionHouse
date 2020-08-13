@@ -10,6 +10,7 @@ public class Auction {
     private int auctionId;
     private UUID auctionedBy;
     private long auctionedOn;
+    private long unlistedOn;
     private ItemStack itemStack;
     private double cost;
     private boolean itemsClaimed;
@@ -18,15 +19,17 @@ public class Auction {
         this.auctionId = ThreadLocalRandom.current().nextInt();
         this.auctionedBy = auctionedBy;
         this.auctionedOn = System.currentTimeMillis();
+        this.unlistedOn = -1;
         this.itemStack = itemStack;
         this.cost = cost;
         this.itemsClaimed = false;
     }
 
-    public Auction(int auctionId, UUID auctionedBy, long auctionedOn, ItemStack itemStack, double cost, boolean itemsClaimed) {
+    public Auction(int auctionId, UUID auctionedBy, long auctionedOn, long unlistedOn, ItemStack itemStack, double cost, boolean itemsClaimed) {
         this.auctionId = auctionId;
         this.auctionedBy = auctionedBy;
         this.auctionedOn = auctionedOn;
+        this.unlistedOn = unlistedOn;
         this.itemStack = itemStack;
         this.cost = cost;
         this.itemsClaimed = itemsClaimed;
@@ -44,6 +47,10 @@ public class Auction {
         return auctionedOn;
     }
 
+    public long getUnlistedOn() {
+        return unlistedOn;
+    }
+
     public ItemStack getItemStack() {
         return itemStack;
     }
@@ -53,26 +60,28 @@ public class Auction {
     }
 
     public boolean isActive() {
-        return auctionedOn + Config.getListingDuration() > System.currentTimeMillis();
+        return auctionedOn + Config.getListingDuration() > System.currentTimeMillis() && !areItemsReclaimable();
+    }
+
+    public boolean areItemsReclaimable() {
+        return unlistedOn != -1 && auctionedOn + Config.getExpiredDuration() > System.currentTimeMillis();
     }
 
     public boolean areItemsClaimed() {
         return itemsClaimed;
     }
 
-    public void setAreItemsClaimed(boolean itemsClaimed) {
-        this.itemsClaimed = itemsClaimed;
-    }
-
     public void unlist() {
         this.itemsClaimed = false;
-        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(this.getAuctionId());
-        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(this.getAuctionId());
+        this.unlistedOn = System.currentTimeMillis();
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(auctionId);
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auctionId);
     }
 
     public void remove() {
         this.itemsClaimed = true;
-        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(this.getAuctionId());
-        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(this.getAuctionId());
+        this.unlistedOn = System.currentTimeMillis();
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(auctionId);
+        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auctionId);
     }
 }
