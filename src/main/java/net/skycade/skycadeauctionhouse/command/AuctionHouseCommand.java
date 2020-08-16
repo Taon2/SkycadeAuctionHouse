@@ -10,6 +10,7 @@ import net.skycade.skycadeauctionhouse.data.Config;
 import net.skycade.skycadeauctionhouse.event.AuctionCreateEvent;
 import net.skycade.skycadeauctionhouse.gui.ListedAuctionsGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +80,7 @@ public class AuctionHouseCommand extends SkycadeCommand {
 
             Auction auction = new Auction(player.getUniqueId(), itemStack, cost);
             plugin.getAuctionsManager().createAuction(auction);
-            player.getInventory().remove(itemStack);
+            player.getInventory().setItemInHand(new ItemStack(Material.AIR));
             player.updateInventory();
             ITEM_LISTED.msg(player, "%amount%", Integer.toString(itemStack.getAmount()),
                     "%item%", itemStack.hasItemMeta() ?
