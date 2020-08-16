@@ -9,6 +9,7 @@ import net.skycade.SkycadeCore.utility.MojangUtil;
 import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
 import net.skycade.skycadeauctionhouse.data.Auction;
 import net.skycade.skycadeauctionhouse.data.AuctionsManager;
+import net.skycade.skycadeauctionhouse.event.AuctionMessagePlayerEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -107,7 +108,15 @@ public class ListedAuctionsGUI extends DynamicGui {
                                                     auction.getItemStack().getType().name(),
                                             "%price%", Double.toString(auction.getCost()));
                                 } else {
-                                    //todo send event/packet for skyblock to message player
+                                    // for skyblock messaging
+                                    AuctionMessagePlayerEvent messagePlayerEvent = new AuctionMessagePlayerEvent(auction.getAuctionedBy(),
+                                            SOMEONE_REMOVED.getMessage().replace("%player%", p.getName())
+                                                    .replace("%amount%", Integer.toString(auction.getItemStack().getAmount()))
+                                                    .replace("%item%", auction.getItemStack().hasItemMeta() ?
+                                                            auction.getItemStack().getItemMeta().getDisplayName() :
+                                                            auction.getItemStack().getType().name())
+                                                    .replace("%price%", Double.toString(auction.getCost())));
+                                    Bukkit.getPluginManager().callEvent(messagePlayerEvent);
                                 }
                                 new ListedAuctionsGUI(player, page).open(p);
                                 return;

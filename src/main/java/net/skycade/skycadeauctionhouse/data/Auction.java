@@ -1,6 +1,8 @@
 package net.skycade.skycadeauctionhouse.data;
 
 import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
+import net.skycade.skycadeauctionhouse.event.AuctionRemoveEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -71,5 +73,9 @@ public class Auction {
         this.itemsClaimed = true;
         SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(auctionId);
         SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auctionId);
+
+        // for skyblock sync
+        AuctionRemoveEvent removeEvent = new AuctionRemoveEvent(auctionId);
+        Bukkit.getPluginManager().callEvent(removeEvent);
     }
 }

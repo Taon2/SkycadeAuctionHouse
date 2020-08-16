@@ -34,8 +34,6 @@ public class ExpireRunnable extends BukkitRunnable {
                                     auction.getItemStack().getItemMeta().getDisplayName() :
                                     auction.getItemStack().getType().name());
                     CHECK_EXPIRED.msg(Bukkit.getPlayer(auction.getAuctionedBy()));
-                } else {
-                    //todo send event/packet for skyblock to message player
                 }
 
                 // dont message about this auction again

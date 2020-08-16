@@ -91,8 +91,6 @@ public class YourListingsGUI extends DynamicGui {
                             player.updateInventory();
                             auction.remove();
                             ITEM_REMOVED.msg(p);
-
-                            //todo send packet for skyblock to remove listing
                         } else {
                             ITEM_DOES_NOT_EXIST.msg(p);
                             if (v18)

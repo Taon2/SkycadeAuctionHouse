@@ -7,7 +7,9 @@ import net.skycade.SkycadeCore.utility.command.addons.SubCommand;
 import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
 import net.skycade.skycadeauctionhouse.data.Auction;
 import net.skycade.skycadeauctionhouse.data.Config;
+import net.skycade.skycadeauctionhouse.event.AuctionCreateEvent;
 import net.skycade.skycadeauctionhouse.gui.ListedAuctionsGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -76,7 +78,7 @@ public class AuctionHouseCommand extends SkycadeCommand {
             }
 
             Auction auction = new Auction(player.getUniqueId(), itemStack, cost);
-            plugin.getAuctionsManager().addAuction(auction);
+            plugin.getAuctionsManager().createAuction(auction);
             player.getInventory().remove(itemStack);
             player.updateInventory();
             ITEM_LISTED.msg(player, "%amount%", Integer.toString(itemStack.getAmount()),
@@ -84,6 +86,10 @@ public class AuctionHouseCommand extends SkycadeCommand {
                             itemStack.getItemMeta().getDisplayName() :
                             itemStack.getType().name(),
                     "%price%", Double.toString(cost));
+
+            // for skyblock sync
+            AuctionCreateEvent createEvent = new AuctionCreateEvent(auction);
+            Bukkit.getPluginManager().callEvent(createEvent);
         }
     }
 }

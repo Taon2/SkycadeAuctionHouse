@@ -38,9 +38,19 @@ public class AuctionsManager {
                 auction.getAuctionedBy().equals(uuid)).collect(Collectors.toList());
     }
 
-    public void addAuction(Auction auction) {
+    public void createAuction(Auction auction) {
         currentAuctions.put(auction.getAuctionId(), auction);
         persistAuction(auction.getAuctionId());
+    }
+
+    // for skyblock to add an auction to local cache, because its already persisted in the db from another server
+    public void addExistingAuction(Auction auction) {
+        currentAuctions.put(auction.getAuctionId(), auction);
+    }
+
+    // for skyblock to remove an auction from local cache, because its already persisted in the db from another server
+    public void removeExistingAuction(int auctiodId) {
+        currentAuctions.remove(auctiodId);
     }
 
     private void loadAuctions() {
