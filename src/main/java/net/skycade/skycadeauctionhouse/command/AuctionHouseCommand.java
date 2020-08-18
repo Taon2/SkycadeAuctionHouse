@@ -83,7 +83,7 @@ public class AuctionHouseCommand extends SkycadeCommand {
             player.getInventory().setItemInHand(new ItemStack(Material.AIR));
             player.updateInventory();
             ITEM_LISTED.msg(player, "%amount%", Integer.toString(itemStack.getAmount()),
-                    "%item%", itemStack.hasItemMeta() ?
+                    "%item%", itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName() ?
                             itemStack.getItemMeta().getDisplayName() :
                             itemStack.getType().name(),
                     "%price%", Double.toString(cost));
