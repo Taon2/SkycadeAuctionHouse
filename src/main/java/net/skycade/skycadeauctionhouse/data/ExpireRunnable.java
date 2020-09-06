@@ -27,7 +27,9 @@ public class ExpireRunnable extends BukkitRunnable {
             if (!auction.isActive() &&
                     !listOfAuctionIdsWhoseOwnersIHaveAlreadyNotifiedOfTheRelativeExpiryAndWontMessageAgain.contains(auction.getAuctionId())) {
                 // message player if online, or send event to skyblock in case theyre online
-                if (Bukkit.getOfflinePlayer(auction.getAuctionedBy()).isOnline()) {
+                if (Bukkit.getOfflinePlayer(auction.getAuctionedBy()) != null
+                        && Bukkit.getOfflinePlayer(auction.getAuctionedBy()).isOnline()
+                        && Bukkit.getPlayer(auction.getAuctionedBy()) != null) {
                     AUCTION_EXPIRED.msg(Bukkit.getPlayer(auction.getAuctionedBy()),
                             "%amount%", Integer.toString(auction.getItemStack().getAmount()),
                             "%item%", auction.getItemStack().hasItemMeta() ?
