@@ -32,7 +32,7 @@ public class ExpireRunnable extends BukkitRunnable {
                         && Bukkit.getPlayer(auction.getAuctionedBy()) != null) {
                     AUCTION_EXPIRED.msg(Bukkit.getPlayer(auction.getAuctionedBy()),
                             "%amount%", Integer.toString(auction.getItemStack().getAmount()),
-                            "%item%", auction.getItemStack().hasItemMeta() ?
+                            "%item%", (auction.getItemStack().hasItemMeta() && auction.getItemStack().getItemMeta().hasDisplayName()) ?
                                     auction.getItemStack().getItemMeta().getDisplayName() :
                                     auction.getItemStack().getType().name());
                     CHECK_EXPIRED.msg(Bukkit.getPlayer(auction.getAuctionedBy()));
