@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,6 +35,8 @@ public class YourListingsGUI extends DynamicGui {
             .addToLore(ChatColor.GREEN + "You can cancel and view your listing's")
             .addToLore(ChatColor.GREEN + "expire time here.")
             .build();
+
+    private final DecimalFormat df = new DecimalFormat("###,###,###,###.##");
 
     public YourListingsGUI(Player player) {
         super(ChatColor.RED + "" + ChatColor.BOLD + "Your Listings", 6);
@@ -60,7 +63,7 @@ public class YourListingsGUI extends DynamicGui {
                     lore.add(ChatColor.GRAY + "------------------------------");
                     lore.add(ChatColor.RED + "Click here to cancel and reclaim this item.");
                     lore.add("");
-                    lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + auction.getCost());
+                    lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + df.format(auction.getCost()));
                     lore.add(ChatColor.BLUE + "Expire: " + (auction.isActive() ?
                                     ChatColor.GOLD + CoreUtil.niceFormat( (int)
                                     (auction.getExpiresOn() - System.currentTimeMillis()) / 1000, true)

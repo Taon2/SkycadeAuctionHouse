@@ -14,6 +14,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
+
 import static net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin.v18;
 import static net.skycade.skycadeauctionhouse.util.Messages.*;
 
@@ -27,6 +29,8 @@ class ConfirmGUI extends DynamicGui {
             .setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Decline Purchase")
             .setData((byte) 14)
             .build();
+
+    private final DecimalFormat df = new DecimalFormat("###,###,###,###.##");
 
     ConfirmGUI(Auction auction, Player player) {
         super(ChatColor.RED + "" + ChatColor.BOLD + "Confirm Purchase", 3);
@@ -74,7 +78,7 @@ class ConfirmGUI extends DynamicGui {
                                 "%item%", auction.getItemStack().hasItemMeta() ?
                                         auction.getItemStack().getItemMeta().getDisplayName() :
                                         auction.getItemStack().getType().name(),
-                                "%price%", Double.toString(auction.getCost()),
+                                "%price%", df.format(auction.getCost()),
                                 "%player%", MojangUtil.get(auction.getAuctionedBy()).getName());
 
                         if (Bukkit.getOfflinePlayer(auction.getAuctionedBy()).isOnline()) {
@@ -84,7 +88,7 @@ class ConfirmGUI extends DynamicGui {
                                     "%item%", auction.getItemStack().hasItemMeta() ?
                                             auction.getItemStack().getItemMeta().getDisplayName() :
                                             auction.getItemStack().getType().name(),
-                                    "%price%", Double.toString(auction.getCost()));
+                                    "%price%", df.format(auction.getCost()));
                         } else {
                             // for skyblock messaging
                             AuctionMessagePlayerEvent messagePlayerEvent = new AuctionMessagePlayerEvent(auction.getAuctionedBy(),
@@ -93,7 +97,7 @@ class ConfirmGUI extends DynamicGui {
                                             .replace("%item%", auction.getItemStack().hasItemMeta() ?
                                                     auction.getItemStack().getItemMeta().getDisplayName() :
                                                     auction.getItemStack().getType().name())
-                                            .replace("%price%", Double.toString(auction.getCost())));
+                                            .replace("%price%", df.format(auction.getCost())));
                             Bukkit.getPluginManager().callEvent(messagePlayerEvent);
                         }
 

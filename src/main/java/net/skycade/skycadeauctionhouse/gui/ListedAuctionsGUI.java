@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ListedAuctionsGUI extends DynamicGui {
             .setDisplayName(ChatColor.GOLD + "Next")
             .build();
     private static final ItemStack YOUR_AUCTIONS = new ItemBuilder(Material.DIAMOND)
-            .setDisplayName(ChatColor.GOLD + "Your Listeings")
+            .setDisplayName(ChatColor.GOLD + "Your Listings")
             .addToLore(ChatColor.GREEN + "Click here to manage all of the items you")
             .addToLore(ChatColor.GREEN + "are currently selling on the auction house.")
             .build();
@@ -48,6 +49,8 @@ public class ListedAuctionsGUI extends DynamicGui {
             .addToLore(ChatColor.GREEN + "list items for sale, and purchase items")
             .addToLore(ChatColor.GREEN + "that others have listed for sale.")
             .build();
+
+    private final DecimalFormat df = new DecimalFormat("###,###,###,###.##");
 
     public ListedAuctionsGUI(Player player, int page) {
         super(ChatColor.RED + "" + ChatColor.BOLD + "Auction House - Page " + page, 6);
@@ -80,7 +83,7 @@ public class ListedAuctionsGUI extends DynamicGui {
                                 lore.add(ChatColor.GREEN + "Click here to purchase.");
                             }
                             lore.add("");
-                            lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + auction.getCost());
+                            lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + df.format(auction.getCost()));
                             lore.add(ChatColor.BLUE + "Seller: " + ChatColor.GOLD + MojangUtil.get(auction.getAuctionedBy()).getName());
                             lore.add(ChatColor.BLUE + "Expire: " + ChatColor.GOLD + CoreUtil.niceFormat( (int)
                                     (auction.getExpiresOn() - System.currentTimeMillis()) / 1000, true));
@@ -106,7 +109,7 @@ public class ListedAuctionsGUI extends DynamicGui {
                                             "%item%", auction.getItemStack().hasItemMeta() ?
                                                     auction.getItemStack().getItemMeta().getDisplayName() :
                                                     auction.getItemStack().getType().name(),
-                                            "%price%", Double.toString(auction.getCost()));
+                                            "%price%", df.format(auction.getCost()));
                                 } else {
                                     // for skyblock messaging
                                     AuctionMessagePlayerEvent messagePlayerEvent = new AuctionMessagePlayerEvent(auction.getAuctionedBy(),
@@ -115,7 +118,7 @@ public class ListedAuctionsGUI extends DynamicGui {
                                                     .replace("%item%", auction.getItemStack().hasItemMeta() ?
                                                             auction.getItemStack().getItemMeta().getDisplayName() :
                                                             auction.getItemStack().getType().name())
-                                                    .replace("%price%", Double.toString(auction.getCost())));
+                                                    .replace("%price%", df.format(auction.getCost())));
                                     Bukkit.getPluginManager().callEvent(messagePlayerEvent);
                                 }
                                 new ListedAuctionsGUI(player, page).open(p);
