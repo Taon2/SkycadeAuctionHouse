@@ -72,10 +72,6 @@ public class Auction {
     public void remove() {
         this.itemsClaimed = true;
         SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().persistAuction(auctionId);
-        SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auctionId);
-
-        // for skyblock sync
-        AuctionRemoveEvent removeEvent = new AuctionRemoveEvent(auctionId);
-        Bukkit.getPluginManager().callEvent(removeEvent);
+        //SkycadeAuctionHousePlugin.getInstance().getAuctionsManager().unlistAuction(auctionId);
     }
 }

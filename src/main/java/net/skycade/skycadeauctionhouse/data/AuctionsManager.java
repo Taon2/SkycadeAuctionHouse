@@ -3,6 +3,7 @@ package net.skycade.skycadeauctionhouse.data;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.CoreUtil;
 import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
+import net.skycade.skycadeauctionhouse.event.AuctionRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
@@ -100,6 +101,10 @@ public class AuctionsManager {
                 statement.setString(8, CoreSettings.getInstance().getThisInstance());
                 statement.setString(9, CoreSettings.getInstance().getSeason());
                 statement.executeUpdate();
+
+                // for skyblock sync
+                AuctionRemoveEvent removeEvent = new AuctionRemoveEvent(auctionId);
+                Bukkit.getPluginManager().callEvent(removeEvent);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

@@ -115,6 +115,7 @@ class ConfirmGUI extends DynamicGui {
                             p.playSound(p.getLocation(), Sound.valueOf("ENDERMAN_TELEPORT"), 1f, 1f);
                         else
                             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
+                        auction.remove();
                         new ListedAuctionsGUI(player, 1).open(p);
                         return;
                     }
