@@ -50,8 +50,8 @@ public class AuctionsManager {
     }
 
     // for skyblock to remove an auction from local cache, because its already persisted in the db from another server
-    public void removeExistingAuction(int auctiodId) {
-        currentAuctions.remove(auctiodId);
+    public void removeExistingAuction(int auctionId) {
+        currentAuctions.remove(auctionId);
     }
 
     private void loadAuctions() {
