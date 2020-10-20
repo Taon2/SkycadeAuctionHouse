@@ -11,10 +11,10 @@ import static net.skycade.skycadeauctionhouse.util.Messages.CHECK_EXPIRED;
 
 public class ExpireRunnable extends BukkitRunnable {
 
-    private AuctionsManager auctionsManager;
+    private final AuctionsManager auctionsManager;
 
     // Ricky's amazing variable name
-    private List<Integer> listOfAuctionIdsWhoseOwnersIHaveAlreadyNotifiedOfTheRelativeExpiryAndWontMessageAgain = new ArrayList<>();
+    private final List<Integer> listOfAuctionIdsWhoseOwnersIHaveAlreadyNotifiedOfTheRelativeExpiryAndWontMessageAgain = new ArrayList<>();
 
     public ExpireRunnable(AuctionsManager auctionsManager) {
         this.auctionsManager = auctionsManager;

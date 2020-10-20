@@ -10,6 +10,7 @@ import net.skycade.skycadeauctionhouse.data.Config;
 import net.skycade.skycadeauctionhouse.event.AuctionCreateEvent;
 import net.skycade.skycadeauctionhouse.gui.ListedAuctionsGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,7 +57,13 @@ public class AuctionHouseCommand extends SkycadeCommand {
                 return;
             }
 
-            double cost = Double.parseDouble(args[0]);
+            double cost;
+            try {
+                cost = Double.parseDouble(args[0]);
+            } catch(NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Please enter a number.");
+                return;
+            }
 
             if (cost > Config.getMaxSellPrice()) {
                 MAX_PRICE.msg(sender, "%cost%", Double.toString(Config.getMaxSellPrice()));
