@@ -2,10 +2,10 @@ package net.skycade.skycadeauctionhouse.gui;
 
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
-import net.skycade.SkycadeCore.guis.dynamicnew.DynamicGui;
-import net.skycade.SkycadeCore.utility.CoreUtil;
-import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.SkycadeCore.utility.MojangUtil;
+import net.skycade.api.gui.DynamicGui;
+import net.skycade.api.utility.ItemBuilder;
+import net.skycade.api.utility.Util;
 import net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin;
 import net.skycade.skycadeauctionhouse.data.Auction;
 import net.skycade.skycadeauctionhouse.data.AuctionsManager;
@@ -85,7 +85,7 @@ public class ListedAuctionsGUI extends DynamicGui {
                             lore.add("");
                             lore.add(ChatColor.BLUE + "Price: "  + ChatColor.GOLD + "$" + df.format(auction.getCost()));
                             lore.add(ChatColor.BLUE + "Seller: " + ChatColor.GOLD + MojangUtil.get(auction.getAuctionedBy()).getName());
-                            lore.add(ChatColor.BLUE + "Expire: " + ChatColor.GOLD + CoreUtil.niceFormat( (int)
+                            lore.add(ChatColor.BLUE + "Expire: " + ChatColor.GOLD + Util.niceFormat( (int)
                                     (auction.getExpiresOn() - System.currentTimeMillis()) / 1000, true));
                             lore.add("");
                             if (player.hasPermission("auctionhouse.cancel.others")) {

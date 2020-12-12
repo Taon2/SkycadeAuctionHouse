@@ -1,7 +1,7 @@
 package net.skycade.skycadeauctionhouse.util;
 
-import net.skycade.SkycadeCore.Localization;
-import net.skycade.SkycadeCore.Localization.Message;
+import net.skycade.api.localization.Localization;
+import net.skycade.api.localization.Localization.Message;
 
 public class Messages {
     public static Message NEED_PRICE = new Message("command.need-price", "&cYou must input a price. &b/ah sell &a<price>");
@@ -28,16 +28,17 @@ public class Messages {
                 MAX_PRICE,
                 INVALID_ITEM,
                 MAX_AUCTIONS,
-                CANNOT_AFFORD,
-                YOU_PURCHASED,
-                NO_INVENTORY_SPACE,
-                ITEM_DOES_NOT_EXIST,
                 ITEM_LISTED,
                 CANNOT_PURCHASE_OWN,
-                ITEM_REMOVED,
-                CHECK_EXPIRED,
+                NO_INVENTORY_SPACE,
+                CANNOT_AFFORD,
+                YOU_PURCHASED,
+                SOMEONE_PURCHASED,
                 SOMEONE_REMOVED,
-                AUCTION_EXPIRED
+                ITEM_DOES_NOT_EXIST,
+                AUCTION_EXPIRED,
+                ITEM_REMOVED,
+                CHECK_EXPIRED
         );
     }
 }

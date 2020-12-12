@@ -1,6 +1,6 @@
 name: SkycadeAuctionHouse
 main: net.skycade.skycadeauctionhouse.SkycadeAuctionHousePlugin
-author: ["Christian Doughty (Taon2)"]
-version: 1.0.6
+authors: ["Christian Doughty (Taon2)"]
+version: 1.0.7
 depend: [SkycadeCore]
 softdepend: []
