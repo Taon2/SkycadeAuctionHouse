@@ -87,8 +87,9 @@ class ConfirmGUI extends DynamicGui {
                                     "%player%", p.getName(),
                                     "%amount%", Integer.toString(auction.getItemStack().getAmount()),
                                     "%item%", auction.getItemStack().hasItemMeta() ?
-                                            auction.getItemStack().getItemMeta().getDisplayName() :
-                                            auction.getItemStack().getType().name(),
+                                            auction.getItemStack().getItemMeta().hasDisplayName() ?
+                                                    auction.getItemStack().getItemMeta().getDisplayName() :
+                                            auction.getItemStack().getType().name() : auction.getItemStack().getType().name(),
                                     "%price%", df.format(auction.getCost()));
                         } else {
                             // for skyblock messaging
